@@ -13,7 +13,7 @@ import os
 # movie
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 
-def exportSplit(myInput, clips, duration, sampleRate, audioFile, log):
+def exportSplit(myInput, output, clips, duration, sampleRate, audioFile, log):
     filepath = os.path.abspath(myInput)
     name = os.path.basename(myInput)
 
