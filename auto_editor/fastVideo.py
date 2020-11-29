@@ -83,6 +83,9 @@ def fastVideo(ffmpeg, vidFile, outFile, chunks, includeFrame, speeds, tracks, ab
 
         mySpeed = speeds[state]
 
+        # keep previous state which is 1
+        # if it's changed from 1 to 99999 write to file and open a new one
+        
         if(mySpeed != 99999):
             doIt = (1 / mySpeed) + remander
             for __ in range(int(doIt)):

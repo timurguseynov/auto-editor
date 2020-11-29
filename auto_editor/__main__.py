@@ -121,6 +121,8 @@ def main():
         help='export as a WAV audio file.')
     add_argument('--export_to_premiere', '-exp', action='store_true',
         help='export as an XML file for Adobe Premiere Pro instead of outputting a media file.')
+    add_argument('--export_split', '-exp', action='store_true',
+        help='my export')
     add_argument('--export_to_resolve', '-exr', action='store_true',
         help='export as an XML file for DaVinci Resolve instead of outputting a media file.')
 
@@ -275,6 +277,8 @@ def main():
             conwrite('Exporting to Adobe Premiere Pro XML file.')
         elif(args.export_to_resolve):
             conwrite('Exporting to DaVinci Resolve XML file.')
+        elif(args.export_split):
+            conwrite('export as my')
         elif(args.export_as_audio):
             conwrite('Exporting as audio.')
         else:
@@ -295,7 +299,7 @@ def main():
         ffmpeg = 'ffmpeg'
         ffprobe = 'ffprobe'
 
-    makingDataFile = args.export_to_premiere or args.export_to_resolve
+    makingDataFile = args.export_to_premiere or args.export_to_resolve or args.export_split
 
     is64bit = '64-bit' if sys.maxsize > 2**32 else '32-bit'
 
@@ -378,6 +382,8 @@ def main():
             dotIndex = oldFile.rfind('.')
             if(args.export_to_premiere or args.export_to_resolve):
                 args.output_file.append(oldFile[:dotIndex] + '.xml')
+            elif args.export_split:
+                args.output_file.append(oldFile[:dotIndex] + '_ALTERED.json')
             else:
                 ext = oldFile[dotIndex:]
                 if(args.export_as_audio):
@@ -582,6 +588,13 @@ def main():
             from resolve import exportToResolve
 
             exportToResolve(INPUT_FILE, newOutput, clips, duration, sampleRate, audioFile, log)
+            continue
+        if(args.export_split):
+            args.no_open = True
+            duration = chunks[len(chunks) - 1][1]
+            from split import exportSplit
+
+            exportSplit(INPUT_FILE, newOutput, clips, duration, sampleRate, audioFile, log)
             continue
         if(audioFile and not makingDataFile):
             from fastAudio import fastAudio
